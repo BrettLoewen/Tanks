@@ -1,0 +1,74 @@
+{
+    "name": "Main Input Actions",
+    "maps": [
+        {
+            "name": "Tank",
+            "id": "40f10be6-ce1a-4d87-9db0-e7625c058722",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "00cf8880-74ce-4504-a13c-7544af4bd37a",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Aim",
+                    "type": "PassThrough",
+                    "id": "e512bd5d-3ff0-4940-9fb6-a2162bf19b22",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Fire Primary",
+                    "type": "Button",
+                    "id": "a472eb3f-cc8e-4565-8898-97e863d781cc",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "ba26612b-a918-4ed8-9ef3-5e215c6166dd",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "StickDeadzone",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5fdd3558-575b-44e2-9927-b74634603af0",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "StickDeadzone",
+                    "groups": "",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3b73d5b1-f60b-4119-91bf-7044c74b3f48",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "AxisDeadzone",
+                    "groups": "",
+                    "action": "Fire Primary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
