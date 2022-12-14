@@ -7,36 +7,15 @@ public class PlayerInputHandler : MonoBehaviour
 {
     #region Variables
 
-    [SerializeField] private Vector2 moveInput; //Stores the input data for movement
+    [SerializeField] private Vector2 moveInput; //Stores the input data for moving the tank
+    [SerializeField] private Vector2 aimInput; //Stores the input data for aiming the tank's turret
 
     #endregion //end Variables
-
-    #region Unity Control Methods
-
-    // Awake is called before Start before the first frame update
-    void Awake()
-    {
-        
-    }//end Awake
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }//end Start
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }//end Update
-
-    #endregion //end Unity Control Methods
 
     #region Move
 
     /// <summary>
-    /// Used to receive input events from a PlayerInput component
+    /// Used to receive movement input events from a PlayerInput component
     /// </summary>
     /// <param name="context">Contains data describing the input action that occured</param>
     public void ReceiveMoveInput(InputAction.CallbackContext context)
@@ -56,4 +35,28 @@ public class PlayerInputHandler : MonoBehaviour
     }//end GetMoveInput
 
     #endregion //end Move
+
+    #region Aim
+
+    /// <summary>
+    /// Used to receive aiming input events from a PlayerInput component
+    /// </summary>
+    /// <param name="context">Contains data describing the input action that occured</param>
+    public void ReceiveAimInput(InputAction.CallbackContext context)
+    {
+        //Read the input data as a vector2 and store it
+        aimInput = context.ReadValue<Vector2>();
+    }//end ReceiveAimInput
+
+    /// <summary>
+    /// Return the aim input data that was received and stored
+    /// </summary>
+    /// <returns>Return the aim input data that was received and stored</returns>
+    public Vector2 GetAimInput()
+    {
+        //Return the aim input data
+        return aimInput;
+    }//end GetAimInput
+
+    #endregion //end Aim
 }
