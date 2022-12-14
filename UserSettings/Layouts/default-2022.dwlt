@@ -21,7 +21,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: Hierarchy
   m_RootView: {fileID: 4}
-  m_MinSize: {x: 875, y: 371}
+  m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
   m_Maximized: 1
 --- !u!114 &2
@@ -74,7 +74,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 200}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 46
+  controlID: 121
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -97,7 +97,7 @@ MonoBehaviour:
     y: 0
     width: 1536
     height: 780.8
-  m_MinSize: {x: 875, y: 371}
+  m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
   m_UseTopView: 1
   m_TopViewHeight: 30
@@ -150,7 +150,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 101
+  controlID: 120
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 200}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 24
+  controlID: 32
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -269,8 +269,8 @@ MonoBehaviour:
     y: 0
     width: 696
     height: 373.6
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 201, y: 221}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 22}
   m_Panes:
   - {fileID: 22}
@@ -287,7 +287,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: InputActionEditorWindow
+  m_Name: GameView
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -296,16 +296,16 @@ MonoBehaviour:
     y: 373.6
     width: 696
     height: 357.19998
-  m_MinSize: {x: 601, y: 321}
+  m_MinSize: {x: 201, y: 221}
   m_MaxSize: {x: 4001, y: 4021}
-  m_ActualView: {fileID: 13}
+  m_ActualView: {fileID: 21}
   m_Panes:
   - {fileID: 21}
   - {fileID: 16}
   - {fileID: 15}
   - {fileID: 13}
-  m_Selected: 3
-  m_LastSelected: 0
+  m_Selected: 0
+  m_LastSelected: 3
 --- !u!114 &13
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -358,9 +358,9 @@ MonoBehaviour:
     m_SearchString: 
   m_ActionsTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: f15ac608
-    m_LastClickedID: 147217137
-    m_ExpandedIDs: 408b6d7b
+    m_SelectedIDs: ae25b2ad
+    m_LastClickedID: -1380833874
+    m_ExpandedIDs: 19c56b985a6801c53d70164d408b6d7b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -390,6 +390,18 @@ MonoBehaviour:
       - itemId: 378383742
         selectedIndex: -1
         scroll: {x: 0, y: 0}
+      - itemId: 1275948795
+        selectedIndex: 0
+        scroll: {x: 0, y: 0}
+      - itemId: 139568391
+        selectedIndex: -1
+        scroll: {x: 0, y: 0}
+      - itemId: 689967731
+        selectedIndex: -1
+        scroll: {x: 0, y: 0}
+      - itemId: -1184024587
+        selectedIndex: -1
+        scroll: {x: 0, y: 0}
     m_ManualPathEditMode: 0
   m_ActionAssetManager:
     m_AssetObjectForEditing: {fileID: 0}
@@ -399,14 +411,34 @@ MonoBehaviour:
     m_ImportedAssetJson: "{\n    \"name\": \"Main Input Actions\",\n    \"maps\":
       [\n        {\n            \"name\": \"Tank\",\n            \"id\": \"40f10be6-ce1a-4d87-9db0-e7625c058722\",\n           
       \"actions\": [\n                {\n                    \"name\": \"Move\",\n                   
-      \"type\": \"Button\",\n                    \"id\": \"00cf8880-74ce-4504-a13c-7544af4bd37a\",\n                   
+      \"type\": \"Value\",\n                    \"id\": \"00cf8880-74ce-4504-a13c-7544af4bd37a\",\n                   
+      \"expectedControlType\": \"Vector2\",\n                    \"processors\":
+      \"\",\n                    \"interactions\": \"\",\n                    \"initialStateCheck\":
+      true\n                },\n                {\n                    \"name\":
+      \"Aim\",\n                    \"type\": \"PassThrough\",\n                   
+      \"id\": \"e512bd5d-3ff0-4940-9fb6-a2162bf19b22\",\n                    \"expectedControlType\":
+      \"Vector2\",\n                    \"processors\": \"\",\n                   
+      \"interactions\": \"\",\n                    \"initialStateCheck\": false\n               
+      },\n                {\n                    \"name\": \"Fire Primary\",\n                   
+      \"type\": \"Button\",\n                    \"id\": \"a472eb3f-cc8e-4565-8898-97e863d781cc\",\n                   
       \"expectedControlType\": \"Button\",\n                    \"processors\": \"\",\n                   
       \"interactions\": \"\",\n                    \"initialStateCheck\": false\n               
       }\n            ],\n            \"bindings\": [\n                {\n                   
       \"name\": \"\",\n                    \"id\": \"ba26612b-a918-4ed8-9ef3-5e215c6166dd\",\n                   
-      \"path\": \"\",\n                    \"interactions\": \"\",\n                   
-      \"processors\": \"\",\n                    \"groups\": \"\",\n                   
-      \"action\": \"Move\",\n                    \"isComposite\": false,\n                   
+      \"path\": \"<Gamepad>/leftStick\",\n                    \"interactions\": \"\",\n                   
+      \"processors\": \"StickDeadzone(max=1)\",\n                    \"groups\":
+      \"\",\n                    \"action\": \"Move\",\n                    \"isComposite\":
+      false,\n                    \"isPartOfComposite\": false\n                },\n               
+      {\n                    \"name\": \"\",\n                    \"id\": \"5fdd3558-575b-44e2-9927-b74634603af0\",\n                   
+      \"path\": \"<Gamepad>/rightStick\",\n                    \"interactions\":
+      \"\",\n                    \"processors\": \"StickDeadzone(max=1)\",\n                   
+      \"groups\": \"\",\n                    \"action\": \"Aim\",\n                   
+      \"isComposite\": false,\n                    \"isPartOfComposite\": false\n               
+      },\n                {\n                    \"name\": \"\",\n                   
+      \"id\": \"3b73d5b1-f60b-4119-91bf-7044c74b3f48\",\n                    \"path\":
+      \"<Gamepad>/rightTrigger\",\n                    \"interactions\": \"\",\n                   
+      \"processors\": \"AxisDeadzone\",\n                    \"groups\": \"\",\n                   
+      \"action\": \"Fire Primary\",\n                    \"isComposite\": false,\n                   
       \"isPartOfComposite\": false\n                }\n            ]\n        }\n   
       ],\n    \"controlSchemes\": []\n}"
     m_IsDirty: 0
@@ -530,7 +562,7 @@ MonoBehaviour:
     m_SaveData: []
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: -40950
+  m_LastSelectedObjectID: -75116
 --- !u!114 &17
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -594,7 +626,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: f4f9ffff
+      m_ExpandedIDs: 94dafefffcfaffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -610,7 +642,7 @@ MonoBehaviour:
         m_IsRenaming: 0
         m_OriginalEventType: 11
         m_IsRenamingFilename: 0
-        m_ClientGUIView: {fileID: 0}
+        m_ClientGUIView: {fileID: 11}
       m_SearchString: 
     m_ExpandedScenes: []
     m_CurrenRootInstanceID: 0
@@ -702,7 +734,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets
+    - Assets/Packages/Tanks Tutorial/Materials
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 0
@@ -716,7 +748,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 06580000
     m_LastClickedID: 22534
-    m_ExpandedIDs: 000000008477000086770000887700008a7700008c770000
+    m_ExpandedIDs: 0000000080760000827600008476000086760000887600008a760000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -741,10 +773,10 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_AssetTreeState:
-    scrollPos: {x: 0, y: 0}
+    scrollPos: {x: 0, y: 240}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: ffffffff000000008477000086770000887700008c77000070790000407a0000
+    m_ExpandedIDs: ffffffff0000000080760000827600008476000086760000887600008a760000747800009278000096780000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1181,9 +1213,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 0.82362854, y: -2.0231876, z: -0.0953449}
+    m_Target: {x: -0.32627022, y: 0.24575448, z: 0.07870747}
     speed: 2
-    m_Value: {x: 0.82362854, y: -2.0231876, z: -0.0953449}
+    m_Value: {x: -0.32627022, y: 0.24575448, z: 0.07870747}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1229,9 +1261,9 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.48015836, y: 0.24681698, z: -0.14286566, w: -0.8295291}
+    m_Target: {x: -0.35080728, y: 0.5563198, z: -0.27889886, w: -0.69975543}
     speed: 2
-    m_Value: {x: -0.48015842, y: 0.24681701, z: -0.14286567, w: -0.8295292}
+    m_Value: {x: -0.35080734, y: 0.5563199, z: -0.27889892, w: -0.69975555}
   m_Size:
     m_Target: 3.6808658
     speed: 2

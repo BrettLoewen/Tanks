@@ -6,18 +6,17 @@ public class TankMovement : MonoBehaviour
 {
     #region Variables
 
-    [SerializeField] private int playerNumber = 1;
-    [SerializeField] private PlayerInputHandler inputHandler;
+    [SerializeField] private PlayerInputHandler inputHandler;   //Stores the script which gathers and stores player input
 
-    [SerializeField] private float speed = 12f;
-    [SerializeField] private float turnSmoothTime;
-    private float turnSmoothVelocity;
+    [SerializeField] private float speed = 12f;     //The movement speed of the tank
+    [SerializeField] private float turnSmoothTime;  //The time over which the tank will rotate to face the direction of movement
+    private float turnSmoothVelocity;               //Used tp store values for turn speed calculations
 
-    [SerializeField] private AudioSource movementAudio;
-    [SerializeField] private AudioClip engineIdleClip;
-    [SerializeField] private AudioClip engineDrivingClip;
-    [SerializeField] private float pitchRange = 0.2f;
-    private float originalPitch;
+    [SerializeField] private AudioSource movementAudio;     //Used to play the engine audio
+    [SerializeField] private AudioClip engineIdleClip;      //The audio clip for when the tank is not moving
+    [SerializeField] private AudioClip engineDrivingClip;   //The aduio clip for when the tank is moving
+    [SerializeField] private float pitchRange = 0.2f;       //A range for a random number modifier for pitch
+    private float originalPitch;                            //Stores the original pitch to be used in the random number generation
 
     private Vector2 moveInput;  //The input telling the tank how to move
 
@@ -88,7 +87,7 @@ public class TankMovement : MonoBehaviour
             if(movementAudio.clip == engineDrivingClip)
             {
                 movementAudio.clip = engineIdleClip;
-                movementAudio.pitch = Random.Range(originalPitch - pitchRange, originalPitch + pitchRange);
+                movementAudio.pitch = Random.Range(originalPitch - pitchRange, originalPitch + pitchRange); //Random pitch to avoid audio phasing
                 movementAudio.Play();
             }
         }
@@ -99,7 +98,7 @@ public class TankMovement : MonoBehaviour
             if (movementAudio.clip == engineIdleClip)
             {
                 movementAudio.clip = engineDrivingClip;
-                movementAudio.pitch = Random.Range(originalPitch - pitchRange, originalPitch + pitchRange);
+                movementAudio.pitch = Random.Range(originalPitch - pitchRange, originalPitch + pitchRange); //Random pitch to avoid audio phasing
                 movementAudio.Play();
             }
         }

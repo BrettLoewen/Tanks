@@ -24,7 +24,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Fire Primary",
+                    "name": "Shoot Primary",
                     "type": "Button",
                     "id": "a472eb3f-cc8e-4565-8898-97e863d781cc",
                     "expectedControlType": "Button",
@@ -63,7 +63,18 @@
                     "interactions": "",
                     "processors": "AxisDeadzone",
                     "groups": "",
-                    "action": "Fire Primary",
+                    "action": "Shoot Primary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "096f84d5-4fd0-4d29-a8a4-016cad33bab0",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shoot Primary",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
