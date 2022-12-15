@@ -6,7 +6,7 @@ public class TankMovement : MonoBehaviour
 {
     #region Variables
 
-    [SerializeField] private PlayerInputHandler inputHandler;   //Stores the script which gathers and stores player input
+    public PlayerInputHandler inputHandler;   //Stores the script which gathers and stores player input
 
     [SerializeField] private float speed = 12f;     //The movement speed of the tank
     [SerializeField] private float turnSmoothTime;  //The time over which the tank will rotate to face the direction of movement

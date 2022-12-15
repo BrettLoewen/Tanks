@@ -10,7 +10,7 @@ public class CameraControl : MonoBehaviour
     [SerializeField] private float screenEdgeBuffer = 4f;   //Defines the distance the edge of the screen needs to be kept from the targets
     [SerializeField] private float minSize = 6.5f;          //The minimum size of the camera
 
-    [SerializeField] private Transform[] targets;    //The array of camera targets that need to be kept on screen
+    [HideInInspector] public List<Transform> targets;    //The list of camera targets that need to be kept on screen
 
     private Camera cam;                 //The camera being controlled
     private float zoomSpeed;            //Stores the zoom speed for calculations
@@ -73,7 +73,7 @@ public class CameraControl : MonoBehaviour
         int numTargets = 0;
 
         //Loop through all the targets
-        for (int i = 0; i < targets.Length; i++)
+        for (int i = 0; i < targets.Count; i++)
         {
             //If this target is not active, skip it
             if(!targets[i].gameObject.activeSelf)
@@ -121,7 +121,7 @@ public class CameraControl : MonoBehaviour
         float size = 0f;
 
         //Loop through all the targets
-        for (int i = 0; i < targets.Length; i++)
+        for (int i = 0; i < targets.Count; i++)
         {
             //If this target is not active, skip it
             if (!targets[i].gameObject.activeSelf)

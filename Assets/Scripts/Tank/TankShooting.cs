@@ -7,7 +7,7 @@ public class TankShooting : MonoBehaviour
 {
     #region Variables
 
-    [SerializeField] private PlayerInputHandler inputHandler;   //Use this to receive inputs
+    public PlayerInputHandler inputHandler;   //Use this to receive inputs
     private Vector2 aimInput;                                   //The received input showing the direction that the player is aiming
 
     [SerializeField] private Rigidbody shellPrefab;         //The prefab of the shell to be spawned and launched
@@ -71,6 +71,10 @@ public class TankShooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(inputHandler.GetShootPrimaryStartInput())
+        {
+            Debug.Log("Shoot");
+        }
         //Ensure the value for the aimSlider gets updated
         aimSlider.value = minLaunchForce;
 

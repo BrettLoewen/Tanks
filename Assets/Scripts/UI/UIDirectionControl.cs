@@ -40,4 +40,9 @@ public class UIDirectionControl : MonoBehaviour
     }//end Update
 
     #endregion //end Unity Control Methods
+
+    public void SetCameraRig(Transform rig)
+    {
+        cameraRig = rig;
+    }
 }

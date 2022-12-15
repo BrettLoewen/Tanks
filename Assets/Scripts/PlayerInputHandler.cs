@@ -17,9 +17,14 @@ public class PlayerInputHandler : MonoBehaviour
     #endregion //end Variables
 
     #region Unity Control Methods
-    
+
+    private void Awake()
+    {
+        transform.parent = PlayerInputManager.instance.transform;
+    }
+
     // Update is called once every frame
-    private void Update()
+    private void LateUpdate()
     {
         //Cancel the shoot primary start flag if the input has finished starting
         shootPrimaryStartFlag = false;
@@ -89,6 +94,7 @@ public class PlayerInputHandler : MonoBehaviour
         //If the input was started (to prevent input from holding or releasing), store that the button was pressed
         if(context.started)
         {
+            Debug.Log("Shoot input");
             shootPrimaryStartFlag = true;
             shootPrimaryHoldFlag = true;
         }
