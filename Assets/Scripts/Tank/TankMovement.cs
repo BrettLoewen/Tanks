@@ -12,10 +12,11 @@ public class TankMovement : MonoBehaviour
     [SerializeField] private float turnSmoothTime;  //The time over which the tank will rotate to face the direction of movement
     private float turnSmoothVelocity;               //Used tp store values for turn speed calculations
 
-    [SerializeField] private float dashForce = 1000f;           //
-    [SerializeField] private float maxDashRechargeTime = 1f;    //
-    private float currentDashRechargeTime;                      //
-    [SerializeField] private ParticleSystem dashExplosion;      //
+    [SerializeField] private float dashForce = 1000f;           //The force used to launch the tank during a dash
+    [SerializeField] private float maxDashRechargeTime = 1f;    //The time it takes to recharge a dash
+    private float currentDashRechargeTime;                      //The current charge of the dash
+    [SerializeField] private ParticleSystem dashExplosion;      //The effect for when the dash triggers
+    [SerializeField] private ParticleSystem dashExhaust;        //The effect for when the dash is charging
 
     [SerializeField] private AudioSource movementAudio;     //Used to play the engine audio
     [SerializeField] private AudioClip engineIdleClip;      //The audio clip for when the tank is not moving
@@ -143,18 +144,29 @@ public class TankMovement : MonoBehaviour
         }
     }//end Move
 
-    //
+    /// <summary>
+    /// Allows the tank to dash forward according to player input
+    /// </summary>
     private void Dash()
     {
+        //If the dash is charged, disable the dash charging effect
+        if(currentDashRechargeTime >= maxDashRechargeTime)
+        {
+            dashExhaust.Stop();
+        }
+
+        //If the player made a dash input, and the dash is charged, then dash
         if (dashFlag && currentDashRechargeTime >= maxDashRechargeTime)
         {
-            rb.AddForce(transform.forward * dashForce);
-            dashExplosion.Play();
-            currentDashRechargeTime = 0f;
+            rb.AddForce(transform.forward * dashForce); //Add force to make the tank to dash
+            dashExplosion.Play();                       //Play the dash particle effect
+            currentDashRechargeTime = 0f;               //Reset the dash charge
         }
+        //If the dash is not fully charged, charge it
         else if(currentDashRechargeTime < maxDashRechargeTime)
         {
-            currentDashRechargeTime += Time.deltaTime;
+            currentDashRechargeTime += Time.deltaTime;  //Increase the current dash charge
+            dashExhaust.Play();                         //Play the dash charging effect
         }
     }//end Dash
 

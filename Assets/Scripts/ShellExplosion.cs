@@ -6,6 +6,7 @@ public class ShellExplosion : MonoBehaviour
 {
     #region Variables
 
+    [SerializeField] private Player player;                     //The player that controls the shooter, so the shell doesn't damage that tank
     [SerializeField] private LayerMask tankMask;                //The layer on which tanks can be found
     [SerializeField] private ParticleSystem explosionParticles; //The particle system used to play the explosion effect
     [SerializeField] private AudioSource explosionAudio;        //The audio source used to play the explosion sound effect
@@ -62,17 +63,17 @@ public class ShellExplosion : MonoBehaviour
                 continue;
             }
 
-            //Add an explosion (knockback) force to the target
-            targetRigidbody.AddExplosionForce(explosionForce, transform.position, explosionRadius);
-
             //Get the target's health script
             TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth>();
 
-            //If the target does not have a TankHealth component, skip it
-            if(targetHealth == null)
+            //If the target does not have a TankHealth component or it is the tank that shot the shell, skip it
+            if(targetHealth == null || targetHealth.SamePlayer(player))
             {
                 continue;
             }
+
+            //Add an explosion (knockback) force to the target
+            targetRigidbody.AddExplosionForce(explosionForce, transform.position, explosionRadius);
 
             //Inflict damage on the target
             targetHealth.TakeDamage(damage);
@@ -89,6 +90,15 @@ public class ShellExplosion : MonoBehaviour
         Destroy(explosionParticles.gameObject, explosionParticles.main.duration);
         Destroy(gameObject);
     }//end OnTriggerEnter
+
+    /// <summary>
+    /// Sets the player of the shell so the tank that fired the shell does not get damaged
+    /// </summary>
+    /// <param name="_player">The player that fired the shell</param>
+    public void SetPlayer(Player _player)
+    {
+        player = _player;
+    }//end SetPlayer
 
     #endregion
 }

@@ -6,6 +6,8 @@ public class TankHealth : MonoBehaviour
 {
     #region Variables
 
+    [SerializeField] private Player player; //The player that controls this tank
+
     [SerializeField] private float startingHealth = 1f; //The amount of health the tank starts the game with
     private float currentHealth;                        //The amount of health the tank currently has
     private bool isDead;                                //Stores whether the tank is alive or dead
@@ -87,6 +89,25 @@ public class TankHealth : MonoBehaviour
         //Disable the tank
         gameObject.SetActive(false);
     }//end OnDeath
+
+    /// <summary>
+    /// Tell the TankHealth who its player is
+    /// </summary>
+    /// <param name="_player">The player to store as this TankHealth's player</param>
+    public void SetPlayer(Player _player)
+    {
+        player = _player;
+    }//end SetPlayer
+
+    /// <summary>
+    /// Return whether or not this TankHealth's player is the same as the passed player
+    /// </summary>
+    /// <param name="otherPlayer">The player to compare this TankHealth's player against</param>
+    /// <returns>Returns true if this TankHealth's player is the same as the passed player, and false otherwise</returns>
+    public bool SamePlayer(Player otherPlayer)
+    {
+        return player.Equals(otherPlayer);
+    }//end SamePlayer
 
     #endregion
 }

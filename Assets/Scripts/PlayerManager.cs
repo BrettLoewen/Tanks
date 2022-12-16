@@ -145,6 +145,9 @@ public class Player
         tankMovement.inputHandler = inputHandler;
         tankShooting.inputHandler = inputHandler;
 
+        tankShooting.player = this;
+        tankShooting.GetComponent<TankHealth>().SetPlayer(this);
+
         //
         SetupColoredPlayerText();
 

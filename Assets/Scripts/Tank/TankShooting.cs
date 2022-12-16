@@ -7,8 +7,10 @@ public class TankShooting : MonoBehaviour
 {
     #region Variables
 
+    public Player player;   //Used to store the player that controls the tank so the shell can avoid damaging the shooter
+
     public PlayerInputHandler inputHandler;   //Use this to receive inputs
-    private Vector2 aimInput;                                   //The received input showing the direction that the player is aiming
+    private Vector2 aimInput;                 //The received input showing the direction that the player is aiming
 
     [SerializeField] private Rigidbody shellPrefab;         //The prefab of the shell to be spawned and launched
     [SerializeField] private Transform shootPoint;          //The point where the shell will be spawned
@@ -185,6 +187,9 @@ public class TankShooting : MonoBehaviour
         //Give the shell its velocity
         shell.velocity = shootPoint.forward * currentLaunchForce;
 
+        //Tell the shell which player fired it
+        shell.GetComponent<ShellExplosion>().SetPlayer(player);
+
         //Play the shoot audio
         shootingAudio.clip = shootClip;
         shootingAudio.Play();
@@ -194,19 +199,20 @@ public class TankShooting : MonoBehaviour
     }//end Shoot
 
     /// <summary>
-    /// 
+    /// Reset the tank's aim rotations, the number of shots, the launch force, and any associated visuals
     /// </summary>
     public void Reset()
     {
-        //
+        //Reset the aim rotation and its visualization
         turret.localRotation = Quaternion.Euler(0f, 0f, 0f);
         shootPointParent.localRotation = Quaternion.Euler(0f, 0f, 0f);
 
-        //
+        //Reset the number of shots and its visualization
         currentNumShots = maxNumShots;
         ammoSlider.value = currentNumShots;
+        ammoSliderFill.color = Color.green;
 
-        //
+        //Reset the launch force and its visualization
         currentLaunchForce = minLaunchForce;
         aimSlider.value = currentLaunchForce;
     }//end Reset
