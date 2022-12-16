@@ -40,10 +40,12 @@ public class PlayerCursor : MonoBehaviour
         //
         if(inputHandler == null)
         {
+            Debug.Log("Hi");
             return;
         }
-        if(inputHandler.GetLeave())
+        if(inputHandler.GetLeaveInput())
         {
+
             Destroy(inputHandler.gameObject);
             return;
         }
@@ -71,7 +73,7 @@ public class PlayerCursor : MonoBehaviour
             menu.cursorsOnPlayButton--;
         }
 
-        if(cursorInPlayButtonBounds && inputHandler.GetSelect())
+        if(cursorInPlayButtonBounds && inputHandler.GetSelectInput())
         {
             menu.StartGame();
         }

@@ -15,6 +15,8 @@ public class PlayerInputHandler : MonoBehaviour
     private bool shootPrimaryHoldFlag;      //
     private bool shootPrimaryReleaseFlag;   //
 
+    private bool dashFlag;      //
+
     private bool leaveFlag;     //
     private bool selectFlag;    //
 
@@ -35,7 +37,9 @@ public class PlayerInputHandler : MonoBehaviour
         //Cancel flags if the input has finished
         shootPrimaryStartFlag = false;
         shootPrimaryReleaseFlag = false;
+        dashFlag = false;
         leaveFlag = false;
+        selectFlag = false;
     }//end Update
 
     #endregion //end Unity Control Methods
@@ -99,7 +103,6 @@ public class PlayerInputHandler : MonoBehaviour
         //If the input was started (to prevent input from holding or releasing), store that the button was pressed
         if(context.started)
         {
-            Debug.Log("Shoot input");
             shootPrimaryStartFlag = true;
             shootPrimaryHoldFlag = true;
         }
@@ -148,7 +151,7 @@ public class PlayerInputHandler : MonoBehaviour
     /// Used to receive leave input events from a PlayerInput component
     /// </summary>
     /// <param name="context">Contains data describing the input action that occured</param>
-    public void ReceiveLeave(InputAction.CallbackContext context)
+    public void ReceiveLeaveInput(InputAction.CallbackContext context)
     {
         //If the leave input started, store it
         if(context.started)
@@ -161,7 +164,7 @@ public class PlayerInputHandler : MonoBehaviour
     /// Return the leave input data that was received and stored
     /// </summary>
     /// <returns>Returns true if the leave input started</returns>
-    public bool GetLeave()
+    public bool GetLeaveInput()
     {
         return leaveFlag;
     }//end GetLeave
@@ -174,9 +177,9 @@ public class PlayerInputHandler : MonoBehaviour
     /// Used to receive select input events from a PlayerInput component
     /// </summary>
     /// <param name="context">Contains data describing the input action that occured</param>
-    public void ReceiveSelect(InputAction.CallbackContext context)
+    public void ReceiveSelectInput(InputAction.CallbackContext context)
     {
-        //If the leave input started, store it
+        //If the select input started, store it
         if (context.started)
         {
             selectFlag = true;
@@ -186,11 +189,38 @@ public class PlayerInputHandler : MonoBehaviour
     /// <summary>
     /// Return the select input data that was received and stored
     /// </summary>
-    /// <returns>Returns true if the leave input started</returns>
-    public bool GetSelect()
+    /// <returns>Returns true if the select input started</returns>
+    public bool GetSelectInput()
     {
         return selectFlag;
     }//end GetSelect
+
+    #endregion
+
+    #region Dash
+
+    /// <summary>
+    /// Used to receive dash input events from a PlayerInput component
+    /// </summary>
+    /// <param name="context">Contains data describing the input action that occured</param>
+    public void ReceiveDashInput(InputAction.CallbackContext context)
+    {
+        //If the dash input started, store it
+        if (context.started)
+        {
+            dashFlag = true;
+        }
+    }//end ReceiveDash
+
+    /// <summary>
+    /// Return the dash input data that was received and stored
+    /// </summary>
+    /// <returns>Returns true if the dash input started</returns>
+    public bool GetDashInput()
+    {
+        return dashFlag;
+    }//end
+
 
     #endregion
 }

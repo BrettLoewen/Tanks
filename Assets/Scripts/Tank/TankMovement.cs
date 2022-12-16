@@ -12,6 +12,11 @@ public class TankMovement : MonoBehaviour
     [SerializeField] private float turnSmoothTime;  //The time over which the tank will rotate to face the direction of movement
     private float turnSmoothVelocity;               //Used tp store values for turn speed calculations
 
+    [SerializeField] private float dashForce = 1000f;           //
+    [SerializeField] private float maxDashRechargeTime = 1f;    //
+    private float currentDashRechargeTime;                      //
+    [SerializeField] private ParticleSystem dashExplosion;      //
+
     [SerializeField] private AudioSource movementAudio;     //Used to play the engine audio
     [SerializeField] private AudioClip engineIdleClip;      //The audio clip for when the tank is not moving
     [SerializeField] private AudioClip engineDrivingClip;   //The aduio clip for when the tank is moving
@@ -19,6 +24,7 @@ public class TankMovement : MonoBehaviour
     private float originalPitch;                            //Stores the original pitch to be used in the random number generation
 
     private Vector2 moveInput;  //The input telling the tank how to move
+    private bool dashFlag;      //The input telling the tank whether or not to dash
 
     private Rigidbody rb;   //The tank's rigidbody
 
@@ -45,6 +51,9 @@ public class TankMovement : MonoBehaviour
     {
         //If the tank is enabled, turn on physics
         rb.isKinematic = false;
+
+        //
+        currentDashRechargeTime = maxDashRechargeTime;
     }//end OnEnable
 
     //OnDisable is caleld whenever the gameobject is disabled
@@ -59,6 +68,7 @@ public class TankMovement : MonoBehaviour
     {
         //Get the input telling the tank how to move
         moveInput = inputHandler.GetMoveInput();
+        dashFlag = inputHandler.GetDashInput();
 
         //Play the correct engine audio
         EngineAudio();
@@ -69,6 +79,9 @@ public class TankMovement : MonoBehaviour
     {
         //Move and turn the tank according to its movement input
         Move();
+
+        //
+        Dash();
     }//end FixedUpdate
 
     #endregion //end Unity Control Methods
@@ -129,6 +142,21 @@ public class TankMovement : MonoBehaviour
             rb.MovePosition(rb.position + (moveDir.normalized * speed * Time.deltaTime));
         }
     }//end Move
+
+    //
+    private void Dash()
+    {
+        if (dashFlag && currentDashRechargeTime >= maxDashRechargeTime)
+        {
+            rb.AddForce(transform.forward * dashForce);
+            dashExplosion.Play();
+            currentDashRechargeTime = 0f;
+        }
+        else if(currentDashRechargeTime < maxDashRechargeTime)
+        {
+            currentDashRechargeTime += Time.deltaTime;
+        }
+    }//end Dash
 
     #endregion
 }

@@ -71,10 +71,6 @@ public class TankShooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(inputHandler.GetShootPrimaryStartInput())
-        {
-            Debug.Log("Shoot");
-        }
         //Ensure the value for the aimSlider gets updated
         aimSlider.value = minLaunchForce;
 
