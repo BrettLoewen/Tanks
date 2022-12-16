@@ -197,5 +197,23 @@ public class TankShooting : MonoBehaviour
         currentLaunchForce = minLaunchForce;
     }//end Shoot
 
+    /// <summary>
+    /// 
+    /// </summary>
+    public void Reset()
+    {
+        //
+        turret.localRotation = Quaternion.Euler(0f, 0f, 0f);
+        shootPointParent.localRotation = Quaternion.Euler(0f, 0f, 0f);
+
+        //
+        currentNumShots = maxNumShots;
+        ammoSlider.value = currentNumShots;
+
+        //
+        currentLaunchForce = minLaunchForce;
+        aimSlider.value = currentLaunchForce;
+    }//end Reset
+
     #endregion
 }

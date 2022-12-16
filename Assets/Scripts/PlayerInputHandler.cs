@@ -6,13 +6,17 @@ using UnityEngine.InputSystem;
 public class PlayerInputHandler : MonoBehaviour
 {
     #region Variables
+    static int count;
 
     [SerializeField] private Vector2 moveInput; //Stores the input data for moving the tank
     [SerializeField] private Vector2 aimInput;  //Stores the input data for aiming the tank's turret
 
-    [SerializeField] private bool shootPrimaryStartFlag;    //
-    [SerializeField] private bool shootPrimaryHoldFlag;     //
-    [SerializeField] private bool shootPrimaryReleaseFlag;  //
+    private bool shootPrimaryStartFlag;     //
+    private bool shootPrimaryHoldFlag;      //
+    private bool shootPrimaryReleaseFlag;   //
+
+    private bool leaveFlag;     //
+    private bool selectFlag;    //
 
     #endregion //end Variables
 
@@ -21,16 +25,17 @@ public class PlayerInputHandler : MonoBehaviour
     private void Awake()
     {
         transform.parent = PlayerInputManager.instance.transform;
+        count++;
+        gameObject.name = "Player " + count;
     }
 
     // Update is called once every frame
     private void LateUpdate()
     {
-        //Cancel the shoot primary start flag if the input has finished starting
+        //Cancel flags if the input has finished
         shootPrimaryStartFlag = false;
-
-        //
         shootPrimaryReleaseFlag = false;
+        leaveFlag = false;
     }//end Update
 
     #endregion //end Unity Control Methods
@@ -136,4 +141,56 @@ public class PlayerInputHandler : MonoBehaviour
     }//end GetShootPrimaryReleaseInput
 
     #endregion //end Aim
+
+    #region Leave
+
+    /// <summary>
+    /// Used to receive leave input events from a PlayerInput component
+    /// </summary>
+    /// <param name="context">Contains data describing the input action that occured</param>
+    public void ReceiveLeave(InputAction.CallbackContext context)
+    {
+        //If the leave input started, store it
+        if(context.started)
+        {
+            leaveFlag = true;
+        }
+    }//end ReceiveLeave
+
+    /// <summary>
+    /// Return the leave input data that was received and stored
+    /// </summary>
+    /// <returns>Returns true if the leave input started</returns>
+    public bool GetLeave()
+    {
+        return leaveFlag;
+    }//end GetLeave
+
+    #endregion
+
+    #region Select
+
+    /// <summary>
+    /// Used to receive select input events from a PlayerInput component
+    /// </summary>
+    /// <param name="context">Contains data describing the input action that occured</param>
+    public void ReceiveSelect(InputAction.CallbackContext context)
+    {
+        //If the leave input started, store it
+        if (context.started)
+        {
+            selectFlag = true;
+        }
+    }//end ReceiveSelect
+
+    /// <summary>
+    /// Return the select input data that was received and stored
+    /// </summary>
+    /// <returns>Returns true if the leave input started</returns>
+    public bool GetSelect()
+    {
+        return selectFlag;
+    }//end GetSelect
+
+    #endregion
 }

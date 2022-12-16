@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour
 
     #endregion //end Unity Control Methods
 
-    #region
+    #region GameLoop
 
     //
     public void StartGame()
@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour
 
         if(gameWinner != null)
         {
-            SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Additive);
+            LoadScene("MainMenu", "SampleScene");
         }
         else
         {
@@ -169,19 +169,28 @@ public class GameManager : MonoBehaviour
     //
     private void ResetAllTanks()
     {
-
+        foreach (Player player in playerManager.players)
+        {
+            player.Reset();
+        }
     }//end ResetAllTanks
 
     //
     private void DisableTankControl()
     {
-
+        foreach (Player player in playerManager.players)
+        {
+            player.DisableControl();
+        }
     }//end DisableTankControl
 
     //
     private void EnableTankControl()
     {
-
+        foreach (Player player in playerManager.players)
+        {
+            player.EnableControl();
+        }
     }//end EnableTankControl
 
     //
@@ -253,7 +262,20 @@ public class GameManager : MonoBehaviour
         return message;
     }//end EndMessage
 
-    
+    //
+    public void ResetForMenu()
+    {
+        foreach (Player player in playerManager.players)
+        {
+            player.ResetForMenu();
+            playerManager.SetupPlayerForMenu(player);
+        }
+    }//end ResetForMenu
+
+    #endregion //end GameLoop
+
+    #region Scene Management
+
     public void LoadScene(string sceneName, string sceneToUnload)
     {
         UnloadScene(sceneToUnload);
@@ -266,5 +288,5 @@ public class GameManager : MonoBehaviour
         SceneManager.UnloadSceneAsync(sceneName);
     }
 
-    #endregion
+    #endregion //end Scene Management
 }
