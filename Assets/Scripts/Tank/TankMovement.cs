@@ -53,7 +53,7 @@ public class TankMovement : MonoBehaviour
         //If the tank is enabled, turn on physics
         rb.isKinematic = false;
 
-        //
+        //Ensure the dash resets when the tank is reset
         currentDashRechargeTime = maxDashRechargeTime;
     }//end OnEnable
 
@@ -67,6 +67,12 @@ public class TankMovement : MonoBehaviour
     //Update is called once per frame
     void Update()
     {
+        //If the game is paused, don't do anything
+        if(GameManager.IsPaused)
+        {
+            return;
+        }
+
         //Get the input telling the tank how to move
         moveInput = inputHandler.GetMoveInput();
         dashFlag = inputHandler.GetDashInput();

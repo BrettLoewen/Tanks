@@ -48,6 +48,7 @@ public class PlayerManager : MonoBehaviour
         Player player = new Player();
 
         player.inputHandler = playerInput.GetComponent<PlayerInputHandler>();
+        player.inputHandler.player = player;
         player.playerNumber = players.Count + 1;
         FindObjectOfType<MainMenu>().GetFirstAvailableColorPicker().SetPlayer(player);
         //player.SetupColoredPlayerText();

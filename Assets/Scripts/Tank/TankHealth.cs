@@ -47,7 +47,11 @@ public class TankHealth : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //If the player wants to pause, tell the game manager
+        if (player.inputHandler.GetPauseInput())
+        {
+            GameManager.Instance.Pause(player);
+        }
     }//end Update
 
     #endregion //end Unity Control Methods

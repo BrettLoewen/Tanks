@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
 {
     #region Variables
 
+    public static GameManager Instance;
+
     [SerializeField] private PlayerManager playerManager;
     private LevelManager levelManager;
 
@@ -17,16 +19,26 @@ public class GameManager : MonoBehaviour
     private CameraControl cameraControl;
     [SerializeField] private GameObject tankPrefab;
 
+    [SerializeField] private CanvasGroup background;
     [SerializeField] private TextMeshProUGUI winnerText;
     [SerializeField] private Transform pointDisplayParent;
     [SerializeField] private PlayerPointDisplay pointDisplayPrefab;
     [SerializeField] private AnimationCurve pointIncreaseCurve;
+    [SerializeField] private GameObject pauseMenuText;
+    
+    public static bool IsPaused { get; private set; }
+    private Player pausedPlayer;
+
+    [SerializeField] private GameObject deviceLostPopup;
+    [SerializeField] private TextMeshProUGUI deviceLostText;
+    public static bool InGame { get; private set; }
 
     private int roundNumber;
     private WaitForSeconds startWait;
     private WaitForSeconds endWait;
     private Player roundWinner;
     private Player gameWinner;
+    private bool waitingForRoundEnd;
 
     #endregion //end Variables
 
@@ -35,13 +47,25 @@ public class GameManager : MonoBehaviour
     // Awake is called before Start before the first frame update
     void Awake()
     {
-        
+        //Setup a singleton reference for the GameManager
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Debug.LogWarning("There are more than 1 GameManagers in the scene!");
+        }
     }//end Awake
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        ClearPlayerPointDisplays();
+        pauseMenuText.SetActive(false);
+        waitingForRoundEnd = false;
+
+        deviceLostPopup.SetActive(false);
     }//end Start
 
     // Update is called once per frame
@@ -67,6 +91,9 @@ public class GameManager : MonoBehaviour
 
         //
         SpawnAllTanks();
+
+        //
+        InGame = true;
 
         //
         StartCoroutine(GameLoop());
@@ -109,13 +136,11 @@ public class GameManager : MonoBehaviour
 
         if(gameWinner != null)
         {
-            //
-            foreach (Transform t in pointDisplayParent)
-            {
-                Destroy(t.gameObject);
-            }
+            ClearPlayerPointDisplays();
 
             winnerText.text = "";
+
+            InGame = false;
 
             LoadScene("MainMenu", "SampleScene");
         }
@@ -136,11 +161,7 @@ public class GameManager : MonoBehaviour
         roundNumber++;
         winnerText.text = "ROUND " + roundNumber;
 
-        //
-        foreach (Transform t in pointDisplayParent)
-        {
-            Destroy(t.gameObject);
-        }
+        ClearPlayerPointDisplays();
 
         yield return startWait;
     }//end RoundStarting
@@ -162,6 +183,9 @@ public class GameManager : MonoBehaviour
     //
     private IEnumerator RoundEnding()
     {
+        //
+        waitingForRoundEnd = true;
+
         //
         yield return new WaitForSeconds(1f);
 
@@ -186,17 +210,7 @@ public class GameManager : MonoBehaviour
         //
         PlayerPointDisplay winnerDisplay = null;
 
-        //
-        foreach (Player player in playerManager.players)
-        {
-            PlayerPointDisplay display = Instantiate(pointDisplayPrefab, pointDisplayParent);
-            display.Setup(player, numRoundsToWin);
-
-            if (player.Equals(roundWinner))
-            {
-                winnerDisplay = display;
-            }
-        }
+        winnerDisplay = SetupPlayerPointDisplays();
 
         //
         if (winnerDisplay != null)
@@ -205,6 +219,8 @@ public class GameManager : MonoBehaviour
         }
 
         yield return endWait;
+
+        waitingForRoundEnd = false;
     }//end RoundEnding
 
     //
@@ -319,6 +335,125 @@ public class GameManager : MonoBehaviour
     }//end ResetForMenu
 
     #endregion //end GameLoop
+
+    #region Pausing / Device Management
+
+    //
+    public void Pause(Player player)
+    {
+        //Don't pause while waiting for the round to end
+        if(waitingForRoundEnd)
+        {
+            return;
+        }
+
+        //
+        if(pausedPlayer == null)
+        {
+            pausedPlayer = player;
+            SetupPlayerPointDisplays();
+            background.alpha = 1f;
+            pauseMenuText.SetActive(true);
+            winnerText.text = player.coloredPlayerText + " PAUSED";
+
+            IsPaused = true;
+
+            Time.timeScale = 0f;
+        }
+        //
+        else if(pausedPlayer == player)
+        {
+            pausedPlayer = null;
+            ClearPlayerPointDisplays();
+            background.alpha = 0f;
+            pauseMenuText.SetActive(false);
+            winnerText.text = "";
+
+            IsPaused = false;
+
+            Time.timeScale = 1f;
+        }
+    }//end Pause
+
+    //
+    public void LostDevice(Player player)
+    {
+        //If we are on the main menu, ignore the loss
+        if(InGame == false)
+        {
+            return;
+        }
+
+        //If the game is not paused, pause it
+        if(IsPaused == false)
+        {
+            Pause(player);
+        }
+        //If the game is already paused
+        else
+        {
+            //If the game is paused by a player other than the one that lost its device
+            if(pausedPlayer != player)
+            {
+                //Unpause with the paused player and pause again with the player who lost its device
+                Pause(pausedPlayer);
+                Pause(player);
+            }
+            //If the player who lost its device already paused the game, leave it paused
+        }
+
+        //
+        deviceLostPopup.SetActive(true);
+        deviceLostText.text = player.coloredPlayerText + " Disconnected";
+    }
+
+    //
+    public void RegainedDevice()
+    {
+        deviceLostPopup.SetActive(false);
+    }
+
+    #endregion //end Pausing / Device Management
+
+    #region UI
+
+    //
+    private PlayerPointDisplay SetupPlayerPointDisplays()
+    {
+        //
+        PlayerPointDisplay winnerDisplay = null;
+
+        //
+        foreach (Player player in playerManager.players)
+        {
+            PlayerPointDisplay display = Instantiate(pointDisplayPrefab, pointDisplayParent);
+            display.Setup(player, numRoundsToWin);
+
+            if (player.Equals(roundWinner))
+            {
+                winnerDisplay = display;
+            }
+        }
+
+        background.alpha = 1f;
+
+        //
+        return winnerDisplay;
+    }//end SetupPlayerPointDisplays
+
+    //
+    private void ClearPlayerPointDisplays()
+    {
+        //
+        foreach (Transform t in pointDisplayParent)
+        {
+            Destroy(t.gameObject);
+        }
+
+        background.alpha = 0f;
+    }//end ClearPlayerPointDisplays
+
+    #endregion //end UI
 
     #region Scene Management
 

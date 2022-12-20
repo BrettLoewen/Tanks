@@ -73,71 +73,23 @@ public class TankShooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //If the game is paused, don't do anything else
+        if(GameManager.IsPaused)
+        {
+            return;
+        }
+        
         //Ensure the value for the aimSlider gets updated
         aimSlider.value = minLaunchForce;
 
         //Aim the turret according to aim input
         Aim();
 
-        //If the tank is not at its maximum number of shots, recharge
-        if(currentNumShots < maxNumShots)
-        {
-            currentNumShots += shotRechargeSpeed * Time.deltaTime;
-        }
-        //If the tank is at its maximum number of shots, don't let it get more
-        else
-        {
-            currentNumShots = maxNumShots;
-        }
+        //Recharge the tank's number of shots and visualize the current shot count
+        HandleAmmo();
 
-        //Update the value of the ammo slider according to the number of shots the tank has left
-        ammoSlider.value = currentNumShots;
-
-        //If the tank is out of shots, make the slider red and do not allow it to shoot
-        if (currentNumShots < 1f)
-        {
-            ammoSliderFill.color = Color.red;
-            return;
-        }
-        //If the tank has shots left, make the slider green and allow it to shoot
-        else
-        {
-            ammoSliderFill.color = Color.green;
-        }
-
-        //If we are at max charge but have not shot yet
-        if (currentLaunchForce >= maxLaunchForce && !hasShot)
-        {
-            //Ensure the launch force does not exceed the max launch force and shoot the shell
-            currentLaunchForce = maxLaunchForce;
-            Shoot();
-        }
-        //If we just started pressing the shoot button
-        else if(inputHandler.GetShootPrimaryStartInput())
-        {
-            //Start charging the shot
-            hasShot = false;
-            currentLaunchForce = minLaunchForce;
-
-            //Play the charging audio
-            shootingAudio.clip = chargingClip;
-            shootingAudio.Play();
-        }
-        //If we are holding the shoot button
-        else if(inputHandler.GetShootPrimaryHoldInput() && !hasShot)
-        {
-            //Continue charging the shot
-            currentLaunchForce += chargeSpeed * Time.deltaTime;
-
-            //Display the charge
-            aimSlider.value = currentLaunchForce;
-        }
-        //If we just released the shoot button
-        else if(inputHandler.GetShootPrimaryReleaseInput() && !hasShot)
-        {
-            //Shoot the shell with the current launch force
-            Shoot();
-        }
+        //Charge a shot and shoot when ready
+        ChargeShot();
     }//end Update
 
     #endregion //end Unity Control Methods
@@ -169,6 +121,84 @@ public class TankShooting : MonoBehaviour
             shootPointParent.rotation = Quaternion.Euler(0f, targetAngle, 0f);
         }
     }//end Aim
+
+    /// <summary>
+    /// Recharge the tank's shot count when it is not full and visualize the tank's current number of shots
+    /// </summary>
+    private void HandleAmmo()
+    {
+        //If the tank is not at its maximum number of shots, recharge
+        if (currentNumShots < maxNumShots)
+        {
+            currentNumShots += shotRechargeSpeed * Time.deltaTime;
+        }
+        //If the tank is at its maximum number of shots, don't let it get more
+        else
+        {
+            currentNumShots = maxNumShots;
+        }
+
+        //Update the value of the ammo slider according to the number of shots the tank has left
+        ammoSlider.value = currentNumShots;
+
+        //If the tank is out of shots, make the slider red and do not allow it to shoot
+        if (currentNumShots < 1f)
+        {
+            ammoSliderFill.color = Color.red;
+            return;
+        }
+        //If the tank has shots left, make the slider green and allow it to shoot
+        else
+        {
+            ammoSliderFill.color = Color.green;
+        }
+    }//end HandleAmmo
+
+    /// <summary>
+    /// Use the shoot input to charge a shot and shoot when the input is released or the charge is full
+    /// </summary>
+    private void ChargeShot()
+    {
+        //The tank cannot shoot if it has no shots, so return
+        if(currentNumShots < 1f)
+        {
+            return;
+        }
+
+        //If we are at max charge but have not shot yet
+        if (currentLaunchForce >= maxLaunchForce && !hasShot)
+        {
+            //Ensure the launch force does not exceed the max launch force and shoot the shell
+            currentLaunchForce = maxLaunchForce;
+            Shoot();
+        }
+        //If we just started pressing the shoot button
+        else if (inputHandler.GetShootPrimaryStartInput())
+        {
+            //Start charging the shot
+            hasShot = false;
+            currentLaunchForce = minLaunchForce;
+
+            //Play the charging audio
+            shootingAudio.clip = chargingClip;
+            shootingAudio.Play();
+        }
+        //If we are holding the shoot button
+        else if (inputHandler.GetShootPrimaryHoldInput() && !hasShot)
+        {
+            //Continue charging the shot
+            currentLaunchForce += chargeSpeed * Time.deltaTime;
+
+            //Display the charge
+            aimSlider.value = currentLaunchForce;
+        }
+        //If we just released the shoot button
+        else if (inputHandler.GetShootPrimaryReleaseInput() && !hasShot)
+        {
+            //Shoot the shell with the current launch force
+            Shoot();
+        }
+    }//end ChargeShot
 
     /// <summary>
     /// Spawn the shell projectile, launch it, play the shoot audio, and update variable values to record this launch

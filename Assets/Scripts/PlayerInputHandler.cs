@@ -8,6 +8,8 @@ public class PlayerInputHandler : MonoBehaviour
     #region Variables
     static int count;
 
+    public Player player;
+
     [SerializeField] private Vector2 moveInput; //Stores the input data for moving the tank
     [SerializeField] private Vector2 aimInput;  //Stores the input data for aiming the tank's turret
 
@@ -16,6 +18,8 @@ public class PlayerInputHandler : MonoBehaviour
     private bool shootPrimaryReleaseFlag;   //
 
     private bool dashFlag;      //
+
+    private bool pauseFlag;     //
 
     private bool leaveFlag;     //
     private bool selectFlag;    //
@@ -40,6 +44,7 @@ public class PlayerInputHandler : MonoBehaviour
         dashFlag = false;
         leaveFlag = false;
         selectFlag = false;
+        pauseFlag = false;
     }//end Update
 
     #endregion //end Unity Control Methods
@@ -120,7 +125,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool GetShootPrimaryStartInput()
     {
         //Return the value stored in the shoot primary start flag
-        return shootPrimaryStartFlag;
+        return GameManager.IsPaused ? false : shootPrimaryStartFlag;
     }//end GetShootPrimaryStartInput
 
     /// <summary>
@@ -130,7 +135,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool GetShootPrimaryHoldInput()
     {
         //Return the value stored in the shoot primary hold flag
-        return shootPrimaryHoldFlag;
+        return GameManager.IsPaused ? false : shootPrimaryHoldFlag;
     }//end GetShootPrimaryHoldInput
 
     /// <summary>
@@ -140,10 +145,10 @@ public class PlayerInputHandler : MonoBehaviour
     public bool GetShootPrimaryReleaseInput()
     {
         //Return the value stored in the shoot primary release flag
-        return shootPrimaryReleaseFlag;
+        return GameManager.IsPaused ? false : shootPrimaryReleaseFlag;
     }//end GetShootPrimaryReleaseInput
 
-    #endregion //end Aim
+    #endregion //end Shoot Primary
 
     #region Leave
 
@@ -158,7 +163,7 @@ public class PlayerInputHandler : MonoBehaviour
         {
             leaveFlag = true;
         }
-    }//end ReceiveLeave
+    }//end ReceiveLeaveInput
 
     /// <summary>
     /// Return the leave input data that was received and stored
@@ -167,9 +172,9 @@ public class PlayerInputHandler : MonoBehaviour
     public bool GetLeaveInput()
     {
         return leaveFlag;
-    }//end GetLeave
+    }//end GetLeaveInput
 
-    #endregion
+    #endregion //end Leave
 
     #region Select
 
@@ -184,7 +189,7 @@ public class PlayerInputHandler : MonoBehaviour
         {
             selectFlag = true;
         }
-    }//end ReceiveSelect
+    }//end ReceiveSelectInput
 
     /// <summary>
     /// Return the select input data that was received and stored
@@ -193,9 +198,9 @@ public class PlayerInputHandler : MonoBehaviour
     public bool GetSelectInput()
     {
         return selectFlag;
-    }//end GetSelect
+    }//end GetSelectInput
 
-    #endregion
+    #endregion //end Select
 
     #region Dash
 
@@ -219,8 +224,62 @@ public class PlayerInputHandler : MonoBehaviour
     public bool GetDashInput()
     {
         return dashFlag;
-    }//end
+    }//end GetDashInput
 
+    #endregion //end Dash
 
-    #endregion
+    #region Pause
+
+    /// <summary>
+    /// Used to receive pause input events from a PlayerInput component
+    /// </summary>
+    /// <param name="context">Contains data describing the input action that occured</param>
+    public void ReceivePauseInput(InputAction.CallbackContext context)
+    {
+        //If the dash input started, store it
+        if (context.started)
+        {
+            pauseFlag = true;
+        }
+    }//end ReceivePause
+
+    /// <summary>
+    /// Return the pause input data that was received and stored
+    /// </summary>
+    /// <returns>Returns true if the pause input started</returns>
+    public bool GetPauseInput()
+    {
+        return pauseFlag;
+    }//end GetPauseInput
+
+    #endregion //end Pause
+
+    #region Device Lost / Regained
+
+    /// <summary>
+    /// Receive the information that the player's device was lost and act accordingly
+    /// </summary>
+    public void ReceiveDeviceLost()
+    {
+        //If we are in a game, tell the game manager that the device was lost
+        if(GameManager.InGame)
+        {
+            GameManager.Instance.LostDevice(player);
+        }
+        //If we are on the main menu, delete the lost player
+        else
+        {
+            Destroy(gameObject);
+        }
+    }//end ReceiveDeviceLost
+
+    /// <summary>
+    /// Receive the information that the player's device was regained and tell the game manager
+    /// </summary>
+    public void ReceiveDeviceRegained()
+    {
+        GameManager.Instance.RegainedDevice();
+    }//end ReceiveDeviceRegained
+
+    #endregion //end Device Lost / Regained
 }
