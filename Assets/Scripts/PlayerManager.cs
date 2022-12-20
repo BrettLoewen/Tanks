@@ -8,7 +8,7 @@ public class PlayerManager : MonoBehaviour
     #region Variables
 
     public List<Player> players = new List<Player>();
-    public Color[] playerColors = new Color[6];
+    //public Color[] playerColors = new Color[6];
 
     [SerializeField] private PlayerUI playerUIPrefab;
     [SerializeField] private PlayerCursor playerCursorPrefab;
@@ -48,9 +48,9 @@ public class PlayerManager : MonoBehaviour
         Player player = new Player();
 
         player.inputHandler = playerInput.GetComponent<PlayerInputHandler>();
-        player.playerColor = playerColors[players.Count];
         player.playerNumber = players.Count + 1;
-        player.SetupColoredPlayerText();
+        FindObjectOfType<MainMenu>().GetFirstAvailableColorPicker().SetPlayer(player);
+        //player.SetupColoredPlayerText();
 
         players.Add(player);
 
@@ -83,6 +83,7 @@ public class PlayerManager : MonoBehaviour
 
         Destroy(players[playerToRemove].playerUI.gameObject);
         Destroy(players[playerToRemove].cursor.gameObject);
+        players[playerToRemove].colorPicker.SetPlayer(null);
 
         players.RemoveAt(playerToRemove);
 
@@ -91,9 +92,8 @@ public class PlayerManager : MonoBehaviour
             if (player.playerNumber - 1 >= playerToRemove)
             {
                 player.playerNumber--;
-                player.playerColor = playerColors[player.playerNumber - 1];
                 player.SetupColoredPlayerText();
-                player.playerUI.playerNameText.text = player.coloredPlayerText;
+                player.playerUI.SetPlayer(player);
                 player.cursor.Setup(player);
             }
         }
@@ -105,7 +105,7 @@ public class PlayerManager : MonoBehaviour
         MainMenu menu = FindObjectOfType<MainMenu>();
 
         PlayerUI playerUI = Instantiate(playerUIPrefab, menu.playerUIParent);
-        playerUI.playerNameText.text = player.coloredPlayerText;
+        playerUI.SetPlayer(player);
         player.playerUI = playerUI;
 
         PlayerCursor cursor = Instantiate(playerCursorPrefab, menu.playerCursorParent);
@@ -130,6 +130,7 @@ public class Player
 
     public PlayerUI playerUI;
     public PlayerCursor cursor;
+    public CBColorPicker colorPicker;
 
     private TankMovement tankMovement;      //
     private TankShooting tankShooting;      //
@@ -166,6 +167,15 @@ public class Player
     {
         coloredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(playerColor) + ">PLAYER" + playerNumber + "</color>";
     }//end SetupColoredPlayerText
+
+    //
+    public void SetColor(Color color, CBColorPicker _colorPicker)
+    {
+        playerColor = color;
+        SetupColoredPlayerText();
+
+        colorPicker = _colorPicker;
+    }//end SetColor
 
     //
     public void DisableControl()

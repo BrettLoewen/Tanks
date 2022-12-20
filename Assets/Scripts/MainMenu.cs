@@ -10,9 +10,7 @@ public class MainMenu : MonoBehaviour
 
     public Transform playerUIParent;
     public Transform playerCursorParent;
-    public RectTransform playButton;
-    public Vector2 playButtonBounds = new Vector2(400f, 75f);
-    public int cursorsOnPlayButton;
+    [SerializeField] private CBColorPicker[] colorPickers;
 
     #endregion //end Variables
 
@@ -41,14 +39,7 @@ public class MainMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(cursorsOnPlayButton > 0)
-        {
-            EventSystem.current.SetSelectedGameObject(playButton.gameObject);
-        }
-        else
-        {
-            EventSystem.current.SetSelectedGameObject(null);
-        }
+        
     }//end Update
 
     #endregion //end Unity Control Methods
@@ -59,6 +50,28 @@ public class MainMenu : MonoBehaviour
     {
         GameManager gameManager = FindObjectOfType<GameManager>();
         gameManager.LoadScene("SampleScene", "MainMenu");
+    }
+
+    //
+    public CBColorPicker GetFirstAvailableColorPicker()
+    {
+        //Create a variable to hold the first color picker found that has no current player
+        CBColorPicker availableColorPicker = null;
+
+        //Loop through the array of color pickers
+        for (int i = 0; i < colorPickers.Length; i++)
+        {
+            //If the color picker has no current player, it is avaiable
+            if(colorPickers[i].HasCurrentPlayer() == false)
+            {
+                //Store the available color picker and stop the loop
+                availableColorPicker = colorPickers[i];
+                break;
+            }
+        }
+
+        //Return the stored available color picker
+        return availableColorPicker;
     }
 
     #endregion
