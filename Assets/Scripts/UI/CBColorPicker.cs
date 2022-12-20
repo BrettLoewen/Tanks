@@ -73,7 +73,10 @@ public class CBColorPicker: CursorButton
         if(player == null)
         {
             //Hide the player indicator and delete any reference to a player
-            playerIndicator.gameObject.SetActive(false);
+            if(playerIndicator != null)
+            {
+                playerIndicator.gameObject.SetActive(false);
+            }
             currentPlayer = null;
             return;
         }

@@ -8,7 +8,6 @@ public class LevelManager : MonoBehaviour
     #region Variables
 
     public CameraControl cameraControl;
-    public TextMeshProUGUI messageText;
 
     public Transform[] spawnPoints;
 

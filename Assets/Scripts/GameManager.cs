@@ -15,8 +15,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float startDelay = 3f;
     [SerializeField] private float endDelay = 3f;
     private CameraControl cameraControl;
-    private TextMeshProUGUI messageText;
     [SerializeField] private GameObject tankPrefab;
+
+    [SerializeField] private TextMeshProUGUI winnerText;
+    [SerializeField] private Transform pointDisplayParent;
+    [SerializeField] private PlayerPointDisplay pointDisplayPrefab;
+    [SerializeField] private AnimationCurve pointIncreaseCurve;
 
     private int roundNumber;
     private WaitForSeconds startWait;
@@ -56,7 +60,6 @@ public class GameManager : MonoBehaviour
         //
         levelManager = FindObjectOfType<LevelManager>();
         cameraControl = levelManager.cameraControl;
-        messageText = levelManager.messageText;
 
         //
         startWait = new WaitForSeconds(startDelay);
@@ -106,6 +109,14 @@ public class GameManager : MonoBehaviour
 
         if(gameWinner != null)
         {
+            //
+            foreach (Transform t in pointDisplayParent)
+            {
+                Destroy(t.gameObject);
+            }
+
+            winnerText.text = "";
+
             LoadScene("MainMenu", "SampleScene");
         }
         else
@@ -123,7 +134,13 @@ public class GameManager : MonoBehaviour
         cameraControl.SetStartPositionAndSize();
 
         roundNumber++;
-        messageText.text = "ROUND " + roundNumber;
+        winnerText.text = "ROUND " + roundNumber;
+
+        //
+        foreach (Transform t in pointDisplayParent)
+        {
+            Destroy(t.gameObject);
+        }
 
         yield return startWait;
     }//end RoundStarting
@@ -134,7 +151,7 @@ public class GameManager : MonoBehaviour
         //
         EnableTankControl();
 
-        messageText.text = string.Empty;
+        winnerText.text = string.Empty;
 
         while (!OnePlayerLeft())
         {
@@ -146,13 +163,16 @@ public class GameManager : MonoBehaviour
     private IEnumerator RoundEnding()
     {
         //
+        yield return new WaitForSeconds(1f);
+
+        //
         DisableTankControl();
 
         //
         roundWinner = null;
         roundWinner = GetRoundWinner();
 
-        if(roundWinner != null)
+        if (roundWinner != null)
         {
             roundWinner.wins++;
         }
@@ -161,7 +181,28 @@ public class GameManager : MonoBehaviour
 
         //
         string message = EndMessage();
-        messageText.text = message;
+        winnerText.text = message;
+
+        //
+        PlayerPointDisplay winnerDisplay = null;
+
+        //
+        foreach (Player player in playerManager.players)
+        {
+            PlayerPointDisplay display = Instantiate(pointDisplayPrefab, pointDisplayParent);
+            display.Setup(player, numRoundsToWin);
+
+            if (player.Equals(roundWinner))
+            {
+                winnerDisplay = display;
+            }
+        }
+
+        //
+        if (winnerDisplay != null)
+        {
+            yield return StartCoroutine(winnerDisplay.IncreasePoints(pointIncreaseCurve));
+        }
 
         yield return endWait;
     }//end RoundEnding
@@ -247,12 +288,12 @@ public class GameManager : MonoBehaviour
             message = roundWinner.coloredPlayerText + " WINS THE ROUND!";
         }
 
-        message += "\n\n\n\n";
+        /*message += "\n\n\n\n";
 
         foreach (Player player in playerManager.players)
         {
             message += player.coloredPlayerText + ": " + player.wins + " WINS\n";
-        }
+        }*/
 
         if(gameWinner != null)
         {
@@ -267,9 +308,14 @@ public class GameManager : MonoBehaviour
     {
         foreach (Player player in playerManager.players)
         {
+            Destroy(player.instance);
             player.ResetForMenu();
             playerManager.SetupPlayerForMenu(player);
         }
+
+        roundNumber = 0;
+
+
     }//end ResetForMenu
 
     #endregion //end GameLoop
