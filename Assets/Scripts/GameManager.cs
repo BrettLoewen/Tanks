@@ -11,10 +11,15 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     [SerializeField] private PlayerManager playerManager;
+
     private LevelManager levelManager;
+    [SerializeField] private LevelLoader levelLoader;
+    [SerializeField] private int maxRoundsPerLevel = 3;
+    private int currentRoundsOnLevel;
+    bool levelSetupComplete;
 
     [SerializeField] private int numRoundsToWin = 10;
-    [SerializeField] private float startDelay = 3f;
+    [SerializeField] private float startDelay = 2f;
     [SerializeField] private float endDelay = 3f;
     private CameraControl cameraControl;
     [SerializeField] private GameObject tankPrefab;
@@ -82,21 +87,61 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         //
+        LevelManager tempLevelManager = levelManager;
+        
+        //
         levelManager = FindObjectOfType<LevelManager>();
-        cameraControl = levelManager.cameraControl;
+
+        //If a new level was loaded, do the setup that needs to happen every level
+        if(tempLevelManager != levelManager)
+        {
+            //
+            cameraControl = levelManager.cameraControl;
+
+            //
+            currentRoundsOnLevel = 0;
+        }
+
+        //True if the game just started, false if the game has already been setup before
+        bool gameJustStarted = !InGame;
+
+        //If the game just started, do the setup that needs to happen every game
+        if(gameJustStarted)
+        {
+            //
+            startWait = new WaitForSeconds(startDelay);
+            endWait = new WaitForSeconds(endDelay);
+
+            //
+            SpawnAllTanks();
+
+            //
+            InGame = true;
+        }
+        else
+        {
+            //
+            int i = 0;
+            foreach (Player player in playerManager.players)
+            {
+                //
+                player.spawnPoint = levelManager.spawnPoints[i];
+
+                //
+                cameraControl.targets.Add(player.instance.transform);
+
+                i++;
+            }
+        }
 
         //
-        startWait = new WaitForSeconds(startDelay);
-        endWait = new WaitForSeconds(endDelay);
+        levelSetupComplete = true;
 
-        //
-        SpawnAllTanks();
-
-        //
-        InGame = true;
-
-        //
-        StartCoroutine(GameLoop());
+        //If the game just started, initiate the game loop
+        if (gameJustStarted)
+        {
+            StartCoroutine(GameLoop());
+        }
     }
 
     //
@@ -134,6 +179,8 @@ public class GameManager : MonoBehaviour
         yield return StartCoroutine(RoundPlaying());
         yield return StartCoroutine(RoundEnding());
 
+        currentRoundsOnLevel++;
+
         if(gameWinner != null)
         {
             ClearPlayerPointDisplays();
@@ -142,10 +189,16 @@ public class GameManager : MonoBehaviour
 
             InGame = false;
 
-            LoadScene("MainMenu", "SampleScene");
+            yield return StartCoroutine(levelLoader.LoadMenu());
         }
         else
         {
+            if(currentRoundsOnLevel >= maxRoundsPerLevel)
+            {
+                levelSetupComplete = false;
+                yield return StartCoroutine(levelLoader.LoadNextLevel());
+            }
+
             StartCoroutine(GameLoop());
         }
     }//end GameLoop
@@ -153,6 +206,12 @@ public class GameManager : MonoBehaviour
     //
     private IEnumerator RoundStarting()
     {
+        //
+        while(levelSetupComplete == false)
+        {
+            yield return null;
+        }
+
         ResetAllTanks();
         DisableTankControl();
 
@@ -162,6 +221,8 @@ public class GameManager : MonoBehaviour
         winnerText.text = "ROUND " + roundNumber;
 
         ClearPlayerPointDisplays();
+
+        yield return StartCoroutine(levelLoader.EndTransition());
 
         yield return startWait;
     }//end RoundStarting
@@ -208,9 +269,7 @@ public class GameManager : MonoBehaviour
         winnerText.text = message;
 
         //
-        PlayerPointDisplay winnerDisplay = null;
-
-        winnerDisplay = SetupPlayerPointDisplays();
+        PlayerPointDisplay winnerDisplay = SetupPlayerPointDisplays();
 
         //
         if (winnerDisplay != null)
@@ -219,6 +278,8 @@ public class GameManager : MonoBehaviour
         }
 
         yield return endWait;
+
+        yield return StartCoroutine(levelLoader.StartTransition());
 
         waitingForRoundEnd = false;
     }//end RoundEnding
@@ -331,7 +392,7 @@ public class GameManager : MonoBehaviour
 
         roundNumber = 0;
 
-
+        StartCoroutine(levelLoader.EndTransition());
     }//end ResetForMenu
 
     #endregion //end GameLoop
@@ -454,20 +515,4 @@ public class GameManager : MonoBehaviour
     }//end ClearPlayerPointDisplays
 
     #endregion //end UI
-
-    #region Scene Management
-
-    public void LoadScene(string sceneName, string sceneToUnload)
-    {
-        UnloadScene(sceneToUnload);
-
-        SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-    }
-
-    public void UnloadScene(string sceneName)
-    {
-        SceneManager.UnloadSceneAsync(sceneName);
-    }
-
-    #endregion //end Scene Management
 }

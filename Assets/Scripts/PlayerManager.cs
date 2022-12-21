@@ -126,7 +126,7 @@ public class Player
     public Transform spawnPoint;                        //
     public int playerNumber;                            //
     [HideInInspector] public string coloredPlayerText;  //
-    [HideInInspector] public GameObject instance;       //
+    public GameObject instance;       //
     [HideInInspector] public int wins;                  //
 
     public PlayerUI playerUI;

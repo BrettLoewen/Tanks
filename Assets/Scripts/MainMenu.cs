@@ -48,8 +48,14 @@ public class MainMenu : MonoBehaviour
 
     public void StartGame()
     {
-        GameManager gameManager = FindObjectOfType<GameManager>();
-        gameManager.LoadScene("SampleScene", "MainMenu");
+        StartCoroutine(StartGameLoop());
+    }
+
+    private IEnumerator StartGameLoop()
+    {
+        LevelLoader levelLoader = FindObjectOfType<LevelLoader>();
+        yield return StartCoroutine(levelLoader.StartTransition());
+        yield return StartCoroutine(levelLoader.LoadNextLevel());
     }
 
     //
